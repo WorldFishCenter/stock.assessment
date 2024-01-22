@@ -1,25 +1,9 @@
 Timor stock assessment
 ================
 
+## Aim
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+The content presented in this repository offers a detailed analysis of marine stock levels in the Timor region. While focused on Timor, the code methodologies and  are adaptable for similar assessments in other countries. This resource is intended to guide sustainable fisheries management and policy development, applicable beyond its primary regional focus.
 
 ## Method
 
