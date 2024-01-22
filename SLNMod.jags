@@ -1,0 +1,38 @@
+
+      model {
+      GLmean.tau <- pow(0.1*GLmean.st,-2) 
+      GLmean.d   ~ dnorm(GLmean.st,GLmean.tau)
+      
+      SD.tau    <- pow(0.2*SD.st,-2)
+      SD.d      ~ dnorm(SD.st,SD.tau)
+      
+      MK.d_tau  <-pow(0.15,-2)
+      MK.d      ~ dnorm(MK.pr,MK.d_tau)
+
+      Linf.tau  <- pow(Linf.sd.pr,-2)
+      Linf.d    ~ dnorm(Linf.pr,Linf.tau)
+      
+      FK        <- (ZK.nls-1.5) # ZK overestimated in gillnet selection, used as upper range
+      FK.d      ~ dunif(0,FK)  
+
+      SL[1]~ dlogis(0,1000)
+      Freq.pred[1]<-0
+      xN[1]<-1
+      
+      for(j in 2:n.L) {
+        SL[j]<- exp(-((L.y[j]-GLmean.d)^2/(2*SD.d^2)))
+
+        xN[j]<-xN[j-1]*exp((MK.d+FK.d*SL[j])*(log(1-L.y[j]/Linf.d)-log(1-L.y[j-1]/Linf.d)))
+      
+        Freq.pred[j]<-xN[j]*SL[j]
+      
+        #><> add effective sample size (try 100 typical for LF data)
+        r.Freq.pred[j]<- Freq.pred[j]/sum(Freq.pred)*10000
+      }	
+      
+      #><> LIKELIHOOD FUNCTION
+      #><> Fit observed to predicted LF data using a Dirichlet distribution (more robust in JAGS)
+      r.Freq.y[2:n.L]~ddirch(r.Freq.pred[2:n.L])  
+
+   } # END OF MODEL
+      
